@@ -137,12 +137,17 @@ class Portfolio:
             proceeds = pos['shares'] * price
             profit = proceeds - pos['entry_value']
             self.cash += proceeds
-            self.trades.append({
+            trade_info = {
                 'action': 'SELL', 'asset': asset, 'index': index, 'price': price,
                 'entry_price': pos['entry_price'], 'shares': pos['shares'],
                 'profit': profit, 'return_pct': (profit / pos['entry_value'] * 100),
                 'value': proceeds, 'reason': reason
-            })
+            }
+            self.trades.append(trade_info)
+            # Track per-asset stats
+            if asset in asset_stats:
+                asset_stats[asset]['trades'].append(trade_info)
+                asset_stats[asset]['profit'] += profit
             del self.positions[asset]
             return True
         return False
@@ -163,6 +168,9 @@ class Portfolio:
             self.max_drawdown = dd
 
 portfolio = Portfolio(initial_cash=1000000)
+
+# Track per-asset statistics
+asset_stats = {asset: {'trades': [], 'profit': 0} for asset in asset_names}
 
 print('Starting backtest with 1,000,000 initial capital...')
 print('Analyzing signals and executing trades...')
@@ -282,6 +290,52 @@ if sell_trades:
     if losing > 0:
         avg_loss = sum([p for p in profits if p < 0]) / losing
         print(f'Average Loss:           {format_indian(avg_loss)}')
+
+# ================= PER-ASSET STATISTICS =================
+print('\n' + '='*80)
+print('PER-ASSET DATASET STATISTICS')
+print('='*80)
+
+for asset_name in asset_names:
+    trades = asset_stats[asset_name]['trades']
+    total_profit = asset_stats[asset_name]['profit']
+    
+    if len(trades) == 0:
+        print(f'\n{asset_name.upper()}:')
+        print(f'  Total Trades:          0')
+        print(f'  Total Profit/Loss:     0.00')
+        continue
+    
+    winning = len([t for t in trades if t['profit'] > 0])
+    losing = len([t for t in trades if t['profit'] < 0])
+    total_trades = len(trades)
+    win_rate = (winning / total_trades * 100) if total_trades > 0 else 0
+    
+    # Calculate ROI based on trades
+    total_value_traded = sum([t['value'] for t in trades])
+    roi = (total_profit / total_value_traded * 100) if total_value_traded > 0 else 0
+    
+    print(f'\n{asset_name.upper()}:')
+    print(f'  Total Trades:          {total_trades}')
+    print(f'  Winning Trades:        {winning}')
+    print(f'  Losing Trades:         {losing}')
+    print(f'  Win Rate %:            {win_rate:.2f}%')
+    print(f'  Total Profit/Loss:     {format_indian(total_profit)}')
+    print(f'  ROI %:                 {roi:.2f}%')
+    
+    if winning > 0:
+        avg_win = sum([t['profit'] for t in trades if t['profit'] > 0]) / winning
+        print(f'  Avg Win:               {format_indian(avg_win)}')
+    
+    if losing > 0:
+        avg_loss = sum([t['profit'] for t in trades if t['profit'] < 0]) / losing
+        print(f'  Avg Loss:              {format_indian(avg_loss)}')
+    
+    if winning > 0 and losing > 0:
+        profit_factor = sum([t['profit'] for t in trades if t['profit'] > 0]) / abs(sum([t['profit'] for t in trades if t['profit'] < 0]))
+        print(f'  Profit Factor:         {profit_factor:.2f}x')
+
+print('='*80)
 
 # ================= PERFORMANCE METRICS =================
 returns = np.diff(portfolio.history) / portfolio.history[:-1]
