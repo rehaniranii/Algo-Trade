@@ -369,7 +369,7 @@ plt.xlabel('Time Steps')
 plt.ylabel('Portfolio Value')
 plt.grid()
 
-plt.savefig('equity_curve.png')
+plt.savefig('graphs/equity_curve.png')
 plt.show()
 
 # DRAWDOWN CALCULATION
@@ -384,7 +384,7 @@ plt.xlabel('Time Steps')
 plt.ylabel('Drawdown')
 plt.grid()
 
-plt.savefig('drawdown_curve.png')
+plt.savefig('graphs/drawdown_curve.png')
 plt.show()
 
 # TRADE PNL DISTRIBUTION
@@ -398,5 +398,5 @@ if profits:
     plt.ylabel('Frequency')
     plt.grid()
 
-    plt.savefig('pnl_distribution.png')
+    plt.savefig('graphs/pnl_distribution.png')
     plt.show()
