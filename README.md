@@ -159,9 +159,12 @@ Give it a star ⭐ and consider building on top of it!
 
 ---
 
+The Following Tests were ran on bad market conditions that is USA IRAN War to test the outcomes
+
 <img width="1200" height="600" alt="image" src="https://github.com/user-attachments/assets/7f7993fe-371f-4cf0-8e24-eb200536a378" />
 <img width="1200" height="600" alt="image" src="https://github.com/user-attachments/assets/9f3fcebe-ec36-4c0e-b21c-1b18e6a9ed33" />
 <img width="1000" height="500" alt="image" src="https://github.com/user-attachments/assets/20f1a143-652f-4fa3-a718-1583f7e427c4" />
+
 
 
 
