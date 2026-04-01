@@ -80,13 +80,6 @@ At the end of the simulation, the system outputs:
 
 ---
 
-### 🇮🇳 Indian Financial Formatting
-
-All outputs are formatted in Indian number style:
-`10,00,000.00` instead of `1,000,000.00`
-
----
-
 ## 🛠️ Installation
 
 ```bash
